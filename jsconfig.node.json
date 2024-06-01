@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "strict": true
   },
-  "include": ["dev-tools", "vite.config.js"]
+  "include": ["dev-tools", "src/server", "vite.config.js"]
 }
