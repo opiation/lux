@@ -17,7 +17,7 @@ import {
 } from "react";
 import { z } from "zod";
 
-let schema = z.object({
+const schema = z.object({
   /**
    * The address of the server that we should connect to.
    */
@@ -135,6 +135,8 @@ type FormProps = {
 };
 
 function Form(props: FormProps) {
+  const { onSubmit } = props;
+
   const submitConfiguration = useCallback(
     (evt: FormEvent<HTMLFormElement>) => {
       evt.preventDefault();
@@ -145,7 +147,7 @@ function Form(props: FormProps) {
       });
 
       if (configValidation.success) {
-        return props.onSubmit?.(configValidation.data);
+        return onSubmit?.(configValidation.data);
       } else {
         console.warn(
           `Submitted configuration was invalid: `,
@@ -153,13 +155,13 @@ function Form(props: FormProps) {
         );
       }
 
-      if (typeof props.onSubmit !== "function") {
+      if (typeof onSubmit !== "function") {
         console.warn(
           `Nothing to do with submitted configuration. Consider providing an onSubmit handler`,
         );
       }
     },
-    [props.onSubmit],
+    [onSubmit],
   );
 
   return (

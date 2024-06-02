@@ -1,14 +1,13 @@
 import Chalk from "chalk";
 
-/** @import { Server as BunServer } from "bun" */
-/** @import { IncomingMessage, RequestListener, Server as NodeServer, ServerResponse } from "node:http" */
+/// <reference types="bun-types" />
 
 /**
  * @param {number} [port]
  * @returns {Server}
  */
 export function create(port = 3000) {
-  /** @type {BunServer | undefined} */
+  /** @type {import("bun").Server | undefined} */
   let bunServer = undefined;
 
   /** @type {Server} */
@@ -62,13 +61,12 @@ export async function forNode(port = 3000, hostname = "localhost") {
 
   const url = `http://${hostname}:${port}`;
 
-  /** @type {RequestListener<typeof IncomingMessage, typeof ServerResponse>} */
+  /** @type {import("node:http").RequestListener<typeof import("node:http").IncomingMessage, typeof import("node:http").ServerResponse>} */
   function handler(_request, response) {
     response.statusCode = 500;
     response.end();
   }
 
-  /** @type {NodeServer} */
   let nodeServer = createServer(handler);
 
   /** @type {Server} */

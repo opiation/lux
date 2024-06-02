@@ -1,6 +1,6 @@
 import { Button, FormControl, FormLabel, Input, Stack } from "@chakra-ui/react";
 import { useCallback, useRef } from "react";
-import { Account, account } from "../schema.js";
+import { Account, account, uuid } from "../schema.js";
 
 type AccountEditFormProps = {
   account?: Partial<Account>;
@@ -8,6 +8,8 @@ type AccountEditFormProps = {
 };
 
 function AccountEditForm(props: AccountEditFormProps) {
+  const { onSubmit } = props;
+
   const defaultAccount = account(props.account);
 
   const idInputRef = useRef<HTMLInputElement>(null);
@@ -16,20 +18,20 @@ function AccountEditForm(props: AccountEditFormProps) {
   const resetAccount = useCallback(() => {
     if (!idInputRef.current || !nameInputRef.current) return;
 
-    idInputRef.current.value = crypto.randomUUID();
+    idInputRef.current.value = uuid();
     nameInputRef.current.value = "";
   }, [idInputRef, nameInputRef]);
 
   const submitAccount = useCallback(() => {
-    if (typeof props.onSubmit !== "function") return;
+    if (typeof onSubmit !== "function") return;
     if (!idInputRef.current || !nameInputRef.current) return;
 
-    props.onSubmit({
+    onSubmit({
       id: idInputRef.current.value,
       name: nameInputRef.current.value,
     });
     resetAccount();
-  }, [props.onSubmit, idInputRef, nameInputRef, resetAccount]);
+  }, [onSubmit, idInputRef, nameInputRef, resetAccount]);
 
   return (
     <Stack align="center" direction="row" spacing="1rem">
@@ -37,8 +39,10 @@ function AccountEditForm(props: AccountEditFormProps) {
         <FormLabel>ID</FormLabel>
         <Input
           defaultValue={defaultAccount.id}
+          minWidth="23rem"
           readOnly
           ref={idInputRef}
+          textAlign="center"
           type="text"
         />
       </FormControl>
@@ -51,7 +55,7 @@ function AccountEditForm(props: AccountEditFormProps) {
           type="text"
         />
       </FormControl>
-      <Button onClick={submitAccount} size="lg">
+      <Button onClick={submitAccount} size="">
         Submit
       </Button>
     </Stack>
