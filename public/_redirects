@@ -1,0 +1,2 @@
+# Redirect all paths to main page if deployed as a Netlify site
+/* /index.html 200
