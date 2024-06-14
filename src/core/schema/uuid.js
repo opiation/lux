@@ -9,7 +9,7 @@ function isUUID(value) {
   return validate(value);
 }
 
-const schema = z.string().refine(isUUID);
+const schema = z.string().uuid().refine(isUUID);
 
 /**
  * @example
