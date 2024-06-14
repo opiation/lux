@@ -1,6 +1,7 @@
 import { Button, FormControl, FormLabel, Input, Stack } from "@chakra-ui/react";
 import { useCallback, useRef } from "react";
-import { Account, account, uuid } from "../schema.js";
+import { Account, account } from "../schema.js";
+import { UUID } from "../core/schema.js";
 
 type AccountEditFormProps = {
   account?: Partial<Account>;
@@ -18,7 +19,7 @@ function AccountEditForm(props: AccountEditFormProps) {
   const resetAccount = useCallback(() => {
     if (!idInputRef.current || !nameInputRef.current) return;
 
-    idInputRef.current.value = uuid();
+    idInputRef.current.value = UUID.generate();
     nameInputRef.current.value = "";
   }, [idInputRef, nameInputRef]);
 
