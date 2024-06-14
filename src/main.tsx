@@ -17,5 +17,5 @@ createRoot(document.getElementById("root")!).render(
       </ChakraProvider>
       <ReactQueryDevtools client={defaultQueryClient} />
     </QueryClientProvider>
-  </StrictMode>,
+  </StrictMode>
 );
