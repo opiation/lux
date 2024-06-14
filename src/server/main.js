@@ -14,9 +14,9 @@ async function main() {
   luxHTTPServer.use(root.routes());
 
   luxHTTPServer.addEventListener("listen", (serverListening) => {
-    console.info(
-      `Server listening at http://${serverListening.hostname}:${serverListening.port} 🚀`
-    );
+    const serverURL = `${serverListening.secure ? "https" : "http"}://${serverListening.hostname}:${serverListening.port}`;
+
+    console.info(`Server listening at ${serverURL} 🚀`);
   });
 
   luxHTTPServer.listen({
