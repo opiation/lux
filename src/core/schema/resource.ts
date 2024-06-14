@@ -1,5 +1,27 @@
 import { z } from "zod";
 
+export function reference<
+  TypeName extends z.ZodTypeAny,
+  Id extends z.ZodTypeAny,
+>(resourceType: ResourceSchema<TypeName, Id>) {
+  return z
+    .string()
+    .trim()
+    .refine((value): value is `${z.infer<TypeName>}/${z.infer<Id>}` => {
+      const [typeName, id] = value.split("/");
+      return (
+        resourceType.shape.typeName.safeParse(typeName).success &&
+        resourceType.shape.id.safeParse(id).success
+      );
+    });
+}
+
+export function referenceTo<TypeName extends string, Id extends string>(
+  res: Resource<TypeName, Id>
+): `${TypeName}/${Id}` {
+  return `${res.typeName}/${res.id}`;
+}
+
 export function resource<
   const TypeName extends string = string,
   IDType extends z.ZodTypeAny = z.ZodString,
