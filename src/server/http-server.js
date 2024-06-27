@@ -1,6 +1,6 @@
 import { Application, Router, serve } from "@oakserver/oak";
 import Chalk from "chalk";
-import { trpcServer } from "./trpc-server";
+import { trpcServer } from "./trpc-server.js";
 
 /// <reference types="bun-types" />
 
@@ -20,17 +20,32 @@ export function create(port = 3000) {
     const now = new Date().toLocaleTimeString();
 
     console.log(
-      `${Chalk.grey.dim(`[${now}]`)} ${Chalk.bold(ctx.request.method)} ${ctx.request.url.pathname}`
+      `${Chalk.grey(`[${now}]`)} ${Chalk.bold(ctx.request.method)} ${ctx.request.url.pathname}`
     );
     await next();
   });
 
   const trpcFetchHandler = trpcServer().fetch;
   luxHTTPServer.use(
-    serve((request, _ctx) => {
-      return /** @type {any} */ (
+    serve(async (request, _ctx) => {
+      if (request.method === "OPTIONS") {
+        return new Response(null, {
+          headers: {
+            "Access-Control-Allow-Headers": "content-type",
+            "Access-Control-Allow-Methods": "GET, OPTIONS, POST",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true",
+          },
+        });
+      }
+
+      const trpcResponse = await /** @type {Promise<Response>} */ (
         trpcFetchHandler(/** @type {any} */ (request))
       );
+
+      trpcResponse.headers.set("Access-Control-Allow-Origin", "*");
+
+      return /** @type {any} */ (trpcResponse);
     })
   );
 
@@ -42,7 +57,7 @@ export function create(port = 3000) {
     const now = new Date().toLocaleTimeString();
 
     console.info(
-      `${Chalk.grey.dim(`[${now}]`)} Server listening at ${Chalk.green.bold(serverURL)} 🚀`
+      `${Chalk.grey(`[${now}]`)} Server listening at ${Chalk.green.bold(serverURL)} 🚀`
     );
   });
 

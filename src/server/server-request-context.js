@@ -1,14 +1,14 @@
-/** @import { Awaitable, ServerRequestContext } from "./types.d.ts" */
+/** @import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch" */
+/** @import { ServerRequestContext } from "./types.d.ts" */
 
 /**
- * @param {import("@trpc/server/adapters/fetch").FetchCreateContextFnOptions} _opts
- * @returns {ServerRequestContext}
+ * @param {FetchCreateContextFnOptions} _opts
  */
 export function fromFetch(_opts) {
-  /** @type {ServerRequestContext} */
-  const self = {
+  /** @satisfies {ServerRequestContext} */
+  const self = Object.freeze({
     version: "local",
-  };
+  });
 
   return self;
 }
