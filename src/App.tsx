@@ -3,9 +3,6 @@ import { WebStorageStateStore } from "oidc-client-ts";
 import { useState } from "react";
 import { AuthProvider } from "react-oidc-context";
 import { Outlet } from "react-router-dom";
-import AccountList from "./components/AccountList";
-import AccountEditForm from "./components/AccountEditForm";
-import { Account } from "./schema.js";
 import { AppConfiguration } from "./app-configuration.js";
 import { MealPlanGenerator } from "./components/meal-planner/MealPlanGenerator.tsx";
 
@@ -20,7 +17,6 @@ type AppProps = {
 };
 
 function App(props: AppProps) {
-  const [accounts, setAccounts] = useState((): Array<Account> => []);
   const redirectURI = `${location.protocol}//${location.host}/`;
 
   return (
@@ -39,16 +35,6 @@ function App(props: AppProps) {
         >
           <Heading>Lux</Heading>
           <Outlet />
-          <AccountEditForm
-            onSubmit={(newAccount) =>
-              setAccounts((current) => [...current, newAccount])
-            }
-          />
-          <AccountList accounts={accounts} />
-          <br />
-          <br />
-          <br />
-          <MealPlanGenerator />
         </Box>
       </AuthProvider>
     </AppConfiguration.ProviderWithManualFallback>

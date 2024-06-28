@@ -1,8 +1,12 @@
-import { Box, Button, Heading, Spinner, Text } from "@chakra-ui/react";
-import ReactMarkdown from "react-markdown";
-import { trpc } from "../../trpc.ts";
+import { Box, Button, Heading, Spinner } from "@chakra-ui/react";
+import { default as ReactMarkdown } from "react-markdown";
+import { trpc } from "../trpc.ts";
 
-export function MealPlanGenerator() {
+/**
+ * Allows users to use AI to plan responsible meals and grocery orders for their
+ * families.
+ */
+export function MealPlanning() {
   const mealPlanGeneration = trpc.generateMealPlans.useMutation();
 
   return (
