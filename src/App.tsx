@@ -1,4 +1,4 @@
-import { Box, Heading, HStack } from "@chakra-ui/react";
+import { Box, Heading, HStack, VStack } from "@chakra-ui/react";
 import { WebStorageStateStore } from "oidc-client-ts";
 import { AuthProvider } from "react-oidc-context";
 import { Outlet } from "react-router-dom";
@@ -26,20 +26,21 @@ export function App(props: AppProps) {
         redirect_uri={redirectURI}
         stateStore={new WebStorageStateStore({ store: window.localStorage })}
       >
-        <Heading>Lux</Heading>
-        <HStack>
-          <Box>
-            <NavigationMenu />
-          </Box>
-          <Box
-            alignItems="center"
-            display="flex"
-            flex={1}
-            flexDirection="column"
-          >
-            <Outlet />
-          </Box>
-        </HStack>
+        <VStack align="left" marginX="20%">
+          <Heading>Lux</Heading>
+          <HStack alignItems="start">
+            <VStack align="left" width={200} >
+              <NavigationMenu />
+            </VStack>
+            <Box
+              display="flex"
+              flex={1}
+              flexDirection="column"
+            >
+              <Outlet />
+            </Box>
+          </HStack>
+        </VStack>
       </AuthProvider>
     </AppConfiguration.ProviderWithManualFallback>
   );
