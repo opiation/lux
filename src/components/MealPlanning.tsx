@@ -1,7 +1,7 @@
-import { Box, Button, FormControl, FormLabel, Heading, Input, Spinner } from "@chakra-ui/react";
-import { default as ReactMarkdown } from "react-markdown";
+import { Box, Button, FormControl, FormLabel, Heading, Input, Spinner, Text } from "@chakra-ui/react";
 import { z as Zod } from "zod";
 import { trpc } from "../trpc.ts";
+import { MealCard } from "./meal-planner/MealCard.tsx";
 
 const acceptableMealCount = Zod.coerce.number().int().min(1).max(9);
 
@@ -18,8 +18,9 @@ export function MealPlanning() {
           const data = new FormData(submission.currentTarget);
           
           const mealCount = data.get("mealCount");
-          
-          mealPlanGeneration.mutate({
+          console.log(`Submitted request to general a meal plan with the following data: `, data);
+
+          return mealPlanGeneration.mutate({
             mealCount: typeof mealCount === "string" ?
               acceptableMealCount.default(1).parse(mealCount) :
               1
@@ -38,9 +39,11 @@ export function MealPlanning() {
           </FormLabel>
           <Input
             defaultValue={1}
+            htmlSize={10}
             name="mealCount"
             placeholder="A number between 1 and 9"
             type="number"
+            width="auto"
           />
         </FormControl>
         <br />
@@ -55,7 +58,17 @@ export function MealPlanning() {
         {mealPlanGeneration.isPending ? (
           <Spinner />
         ) : mealPlanGeneration.data ? (
-          <ReactMarkdown>{mealPlanGeneration.data}</ReactMarkdown>
+          <>
+            {mealPlanGeneration.data.meals.length > 0 ? (
+              <>
+                {mealPlanGeneration.data.meals.map(meal => (
+                  <MealCard key={meal.dishes.main.name} meal={meal} />
+                ))}
+              </>
+            ) : (
+              <Text>No meals could be generated</Text>
+            )}
+          </>
         ) : mealPlanGeneration.error ? (
           mealPlanGeneration.error.message
         ) : null}
@@ -63,3 +76,4 @@ export function MealPlanning() {
     </Box>
   );
 }
+

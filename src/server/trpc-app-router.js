@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { publicProcedure, router } from "./trpc.js";
-import { usingOllama } from "../core/meal-planner.ts";
+import { MealPlan, usingOllama } from "../core/meal-planner.js";
 
 export const appRouter = router({
   config: publicProcedure
@@ -12,7 +12,7 @@ export const appRouter = router({
     }),
 
   generateMealPlans: publicProcedure
-    .output(z.string())
+    .output(MealPlan)
     .input(
       z.object({
         adultCount: z.number().min(0).optional().default(2),
