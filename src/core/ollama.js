@@ -12,7 +12,7 @@ import { z as Zod } from "zod";
  * `stream: false`
  */
 export const CompletionResponseBody = Zod.object({
-  context: Zod.array(Zod.number()),
+  context: Zod.array(Zod.number()).nullish(),
   created_at: Zod.string().trim().min(1),
   done: Zod.boolean(),
   model: Zod.string().trim().min(1),
