@@ -1,7 +1,8 @@
 // @ts-check
 
 import { z as Zod } from "zod";
-import * as Ollama from "../projects/opiation/lux/src/core/ollama.js";
+import * as Ollama from "./ollama.js";
+import { resourceTypedAs } from "./schema/typed-resource.js";
 
 /**
  * @typedef {Object} MealPlanner
@@ -11,16 +12,13 @@ import * as Ollama from "../projects/opiation/lux/src/core/ollama.js";
 
 export const MealPlanRequestParams = Zod.object({
   /** The number of adults each meal in the plan is intended to feed */
-  adultCount: Zod.number().min(0)
-    .optional(),
+  adultCount: Zod.number().min(0).optional(),
 
   /** The number of children each meal in the plan is intended to feed */
-  childCount: Zod.number().min(0)
-    .optional(),
+  childCount: Zod.number().min(0).optional(),
 
   /** The number of meals that should be included in the meal plan */
-  mealCount: Zod.number().min(1)
-    .optional(),
+  mealCount: Zod.number().min(1).optional(),
 });
 /** @typedef {Zod.infer<typeof MealPlanRequestParams>} MealPlanRequestParams */
 
@@ -28,7 +26,7 @@ export const MealPlanRequestParams = Zod.object({
 export const defaultMealPlanRequestParams = Object.freeze({
   adultCount: 2,
   childCount: 2,
-  mealCount: 7
+  mealCount: 7,
 });
 
 const systemMessage = `
@@ -62,31 +60,39 @@ export const Dish = Zod.object({
   description: Zod.string().trim().min(1).optional(),
   ingredients: Zod.array(Zod.string().trim().min(1)).optional(),
   instructions: Zod.array(Zod.string().trim().min(1)).optional(),
-  relatedLinks: Zod.array(Zod.string().url()).optional()
+  relatedLinks: Zod.array(Zod.string().url()).optional(),
 });
 /** @typedef {Zod.infer<typeof Dish>} Dish */
 
-export const Meal = Zod.object({
+export const Meal = resourceTypedAs("Meal").extend({
   dishes: Zod.object({
     main: Dish,
     side: Dish,
-    desert: Dish.optional()
-  })
-})
+    desert: Dish.optional(),
+  }),
+});
 /** @typedef {Zod.infer<typeof Meal>} Meal */
 
 export const MealPlan = Zod.object({
-  meals: Zod.array(Meal)
+  meals: Zod.array(Meal),
 });
 /** @typedef {Zod.infer<typeof MealPlan>} MealPlan */
 
+/**
+ * Create a {@link MealPlanner} that uses the Ollama API to generate meal plans
+ *
+ * @param {*} model
+ * @returns
+ */
 export function usingOllama(model = "llama3") {
   /** @satisfies {MealPlanner} */
   const self = {
     async generateMealPlans(params = defaultMealPlanRequestParams) {
-      const { adultCount, childCount, mealCount } =
-        { ...defaultMealPlanRequestParams, ...params };
-      
+      const { adultCount, childCount, mealCount } = {
+        ...defaultMealPlanRequestParams,
+        ...params,
+      };
+
       const completion = await Ollama.generate({
         format: "json",
         model,
@@ -95,7 +101,10 @@ export function usingOllama(model = "llama3") {
         system: systemMessage,
       });
 
-      return MealPlan.parse(JSON.parse(completion.response));
+      return MealPlan.parse({
+        typeName: "Meal",
+        ...JSON.parse(completion.response),
+      });
     },
   };
 
