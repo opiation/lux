@@ -1,6 +1,6 @@
 import { Button, FormControl, FormLabel, Input, Stack } from "@chakra-ui/react";
 import { useCallback, useRef } from "react";
-import { Account, account } from "../../schema.js";
+import { Account, account } from "../../core/accounting/schema.js";
 import { UUID } from "../../core/schema.js";
 
 type AccountEditFormProps = {

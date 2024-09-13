@@ -2,7 +2,7 @@ import { z } from "zod";
 import { publicProcedure, router } from "./trpc.js";
 import { MealPlan, usingOllama } from "../core/meal-planner.js";
 import { UUID, User } from "../core/schema.js";
-import { Account } from "../schema.js";
+import { Account } from "../core/accounting/schema.js";
 
 export const appRouter = router({
   accounting: router({
