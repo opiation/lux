@@ -4,7 +4,9 @@ import { UUID } from "./uuid.js";
 
 export const Organization = resource("Organization", UUID).extend({
   /**
-   * Name of the {@link schema Organization}
+   * Name of the {@link Organization}
+   *
+   * @example "ACNE Corp"
    */
   name: z.string().trim().min(1),
 });

@@ -1,9 +1,16 @@
-import { Box, Heading, HStack, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  CircularProgress,
+  Heading,
+  HStack,
+  VStack,
+} from "@chakra-ui/react";
 import { WebStorageStateStore } from "oidc-client-ts";
 import { AuthProvider } from "react-oidc-context";
 import { Outlet } from "react-router-dom";
 import { AppConfiguration } from "./app-configuration.js";
 import { NavigationMenu } from "./components/NavigationMenu.js";
+import { Suspense } from "react";
 
 /** Client Id of the Lux front-end application according to Medplum */
 // const LUX_MEDPLUM_CLIENT_ID = "5fc0ad69-d212-4712-a13f-f977aba3587b";
@@ -29,15 +36,19 @@ export function App(props: AppProps) {
         <VStack align="left" marginX="20%">
           <Heading>Lux</Heading>
           <HStack alignItems="start">
-            <VStack align="left" width={200} >
+            <VStack align="left" width={200}>
               <NavigationMenu />
             </VStack>
-            <Box
-              display="flex"
-              flex={1}
-              flexDirection="column"
-            >
-              <Outlet />
+            <Box display="flex" flex={1} flexDirection="column">
+              <Suspense
+                fallback={
+                  <CircularProgress isIndeterminate>
+                    Loading...
+                  </CircularProgress>
+                }
+              >
+                <Outlet />
+              </Suspense>
             </Box>
           </HStack>
         </VStack>
@@ -45,4 +56,3 @@ export function App(props: AppProps) {
     </AppConfiguration.ProviderWithManualFallback>
   );
 }
-
