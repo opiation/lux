@@ -1,8 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import { Text } from "@chakra-ui/react";
+import { lazy } from "react";
 import { App } from "./App.tsx";
-import { Accounting } from "./components/Accounting.tsx";
-import { MealPlanning } from "./components/MealPlanning.tsx";
+
+const Accounting = lazy(() => import("./components/accounting/Accounting.tsx"));
+const MealPlanning = lazy(() => import("./components/MealPlanning.tsx"));
 
 export function router() {
   return createBrowserRouter([
@@ -13,12 +15,12 @@ export function router() {
         },
         {
           element: <Accounting />,
-          path: "/accounting"
+          path: "/accounting/*",
         },
         {
           element: <MealPlanning />,
-          path: "/meal-planner"
-        }
+          path: "/meal-planner/*",
+        },
       ],
       element: <App />,
       path: "/",

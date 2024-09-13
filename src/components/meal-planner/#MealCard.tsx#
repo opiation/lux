@@ -1,0 +1,48 @@
+dddimport { Card, CardBody, CardHeader, Divider, Heading, Stack, StackDivider } from "@chakra-ui/react";
+import { Meal } from "../../core/meal-planner.js";
+import { DishDisplay } from "./DishDisplay.tsx";
+import { VeganIcon } from "./VeganIcon.tsx";
+
+export type MealCardProps = {
+  /**
+   * The meal to be displayed in the card
+   *
+   * Note, if the meal contains no dishes or the none of the dishes have names,
+   * the component will render nothing.
+   */
+  meal: Meal
+}
+
+export function MealCard(props: MealCardProps) {
+  const { meal } = props;
+  const { desert, main, side } = meal.dishes;
+
+  const dishNames = [
+    main?.name ?? undefined,
+    side?.name ?? undefined,
+    desert?.name ?? undefined
+  ].filter((name): name is string => typeof name === "string");
+
+  if (dishNames.length === 0) {
+    return <></>
+  }
+
+  const title = dishNames.join(", ");
+  
+  return (
+    <Card>
+      <CardHeader>
+        <Heading as="h4" size="md">{title}</Heading>
+        <VeganIcon />
+      </CardHeader>
+      <Divider />
+      <CardBody>
+        <Stack divider={<StackDivider />} spacing={4}>
+          {main && <DishDisplay dish={main} key="main" />}
+          {side && <DishDisplay dish={side} key="side" />}
+          {desert && <DishDisplay dish={desert} key="desert" />}
+        </Stack>
+      </CardBody>
+    </Card>
+  );
+}

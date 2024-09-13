@@ -45,7 +45,7 @@ Response with a JSON object matching the schema of the example below:
           instructions: ["Roast the bell peppers", "Cook the Quinoa"],
           relatedLinks: []
         },
-        side: { ... },
+        side: { ... }, 
         desert: { ... }
       }
     }
@@ -81,10 +81,10 @@ export const MealPlan = Zod.object({
 /**
  * Create a {@link MealPlanner} that uses the Ollama API to generate meal plans
  *
- * @param {*} model
+ * @param {string} model
  * @returns
  */
-export function usingOllama(model = "llama3") {
+export function usingOllama(model = "llama3.1:8b") {
   /** @satisfies {MealPlanner} */
   const self = {
     async generateMealPlans(params = defaultMealPlanRequestParams) {

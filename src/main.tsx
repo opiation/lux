@@ -24,5 +24,5 @@ createRoot(document.getElementById("root")!).render(
         <ReactQueryDevtools client={defaultQueryClient} />
       </QueryClientProvider>
     </trpc.Provider>
-  </StrictMode>
+  </StrictMode>,
 );

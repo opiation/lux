@@ -1,4 +1,13 @@
-import { Box, Button, FormControl, FormLabel, Heading, Input, Spinner, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 import { z as Zod } from "zod";
 import { trpc } from "../trpc.ts";
 import { MealCard } from "./meal-planner/MealCard.tsx";
@@ -12,20 +21,25 @@ const acceptableMealCount = Zod.coerce.number().int().min(1).max(9);
 export function MealPlanning() {
   const mealPlanGeneration = trpc.generateMealPlans.useMutation();
 
-  const submitMealPlanRequest =
-        (submission: React.FormEvent<HTMLFormElement>) => {
-          submission.preventDefault();
-          const data = new FormData(submission.currentTarget);
-          
-          const mealCount = data.get("mealCount");
-          console.log(`Submitted request to general a meal plan with the following data: `, data);
+  const submitMealPlanRequest = (
+    submission: React.FormEvent<HTMLFormElement>,
+  ) => {
+    submission.preventDefault();
+    const data = new FormData(submission.currentTarget);
 
-          return mealPlanGeneration.mutate({
-            mealCount: typeof mealCount === "string" ?
-              acceptableMealCount.default(1).parse(mealCount) :
-              1
-          });
-        }
+    const mealCount = data.get("mealCount");
+    console.log(
+      `Submitted request to general a meal plan with the following data: `,
+      data,
+    );
+
+    return mealPlanGeneration.mutate({
+      mealCount:
+        typeof mealCount === "string"
+          ? acceptableMealCount.default(1).parse(mealCount)
+          : 1,
+    });
+  };
 
   return (
     <Box>
@@ -51,7 +65,9 @@ export function MealPlanning() {
           isDisabled={mealPlanGeneration.isPending}
           isLoading={mealPlanGeneration.isPending}
           type="submit"
-        >Generate a meal plan!</Button>
+        >
+          Generate a meal plan!
+        </Button>
       </form>
       <br />
       <Box key="suggestions">
@@ -61,7 +77,7 @@ export function MealPlanning() {
           <>
             {mealPlanGeneration.data.meals.length > 0 ? (
               <>
-                {mealPlanGeneration.data.meals.map(meal => (
+                {mealPlanGeneration.data.meals.map((meal) => (
                   <MealCard key={meal.dishes.main.name} meal={meal} />
                 ))}
               </>
@@ -76,4 +92,4 @@ export function MealPlanning() {
     </Box>
   );
 }
-
+export default MealPlanning;

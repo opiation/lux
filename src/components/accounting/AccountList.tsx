@@ -1,5 +1,5 @@
 import { Stack, Text } from "@chakra-ui/react";
-import { Account, account } from "../schema.js";
+import { Account, account } from "../../schema.js";
 import { useMemo, useState } from "react";
 
 type AccountListProps = {
