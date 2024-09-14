@@ -1,5 +1,4 @@
 import {
-  bindActionCreators,
   configureStore,
   createSlice,
   type PayloadAction,
@@ -72,6 +71,36 @@ const slice = createSlice({
           [newAccount.id]: newAccount,
         },
       };
+    },
+    deleteAccounts(
+      state,
+      {
+        payload: accountIds,
+      }: PayloadAction<Account["id"] | ReadonlyArray<Account["id"]>>,
+    ) {
+      if (typeof accountIds === "string") {
+        if (!state.accounts?.[accountIds]) return state;
+
+        const accountsWithoutTheDeletedOne = { ...state.accounts };
+        delete accountsWithoutTheDeletedOne[accountIds];
+
+        return { ...state, accounts: accountsWithoutTheDeletedOne };
+      }
+
+      if (!Array.isArray(accountIds)) return state;
+
+      const accountsWithoutTheDeletedOnes = { ...state.accounts };
+      let deletedAtLeastOne = false;
+      for (const accountId of accountIds) {
+        if (accountsWithoutTheDeletedOnes[accountId]) {
+          delete accountsWithoutTheDeletedOnes[accountId];
+          deletedAtLeastOne = true;
+        }
+      }
+
+      if (!deletedAtLeastOne) return state;
+
+      return { ...state, accounts: accountsWithoutTheDeletedOnes };
     },
     load(_, action: PayloadAction<State>) {
       return action.payload;
