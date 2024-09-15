@@ -90,7 +90,15 @@ export function Accounting() {
         Create a random account
       </Button>
       <Routes>
-        <Route element={<AccountListPage />} index />
+        <Route
+          element={
+            <AccountListPage
+              onDeleteInline={dispatch}
+              onRenameInline={dispatch}
+            />
+          }
+          index
+        />
         <Route path="edit/:id" element={<AccountEditorPage />} />
       </Routes>
     </Provider>
