@@ -64,13 +64,11 @@ const slice = createSlice({
         id: crypto.randomUUID(),
       });
 
-      return {
-        ...state,
-        accounts: {
-          ...state.accounts,
-          [newAccount.id]: newAccount,
-        },
-      };
+      if (state.accounts) {
+        state.accounts[newAccount.id] = newAccount;
+      } else {
+        state.accounts = { [newAccount.id]: newAccount };
+      }
     },
     deleteAccounts(
       state,
@@ -78,32 +76,39 @@ const slice = createSlice({
         payload: accountIds,
       }: PayloadAction<Account["id"] | ReadonlyArray<Account["id"]>>,
     ) {
-      if (typeof accountIds === "string") {
-        if (!state.accounts?.[accountIds]) return state;
+      // If we have no accounts, then the action may be considered already
+      // fulfilled as its goal is for a set of accounts to not be in this state.
+      if (!state.accounts) return state;
 
-        const accountsWithoutTheDeletedOne = { ...state.accounts };
-        delete accountsWithoutTheDeletedOne[accountIds];
+      // Coerce the Account Id input into an array to use a single
+      // implementation.
+      accountIds = Array.isArray(accountIds) ? accountIds : [accountIds];
 
-        return { ...state, accounts: accountsWithoutTheDeletedOne };
-      }
-
-      if (!Array.isArray(accountIds)) return state;
-
-      const accountsWithoutTheDeletedOnes = { ...state.accounts };
-      let deletedAtLeastOne = false;
       for (const accountId of accountIds) {
-        if (accountsWithoutTheDeletedOnes[accountId]) {
-          delete accountsWithoutTheDeletedOnes[accountId];
-          deletedAtLeastOne = true;
+        if (state.accounts[accountId]) {
+          delete state.accounts[accountId];
         }
       }
-
-      if (!deletedAtLeastOne) return state;
-
-      return { ...state, accounts: accountsWithoutTheDeletedOnes };
     },
-    load(_, action: PayloadAction<State>) {
-      return action.payload;
+    load(_, { payload: loadedState }: PayloadAction<State>) {
+      return loadedState;
+    },
+    renameAccount(
+      state,
+      action: PayloadAction<{
+        accountId: Account["id"];
+        newName: Account["name"];
+      }>,
+    ) {
+      const { accountId, newName } = action.payload;
+
+      if (
+        !state.accounts?.[accountId] ||
+        state.accounts[accountId].name === newName
+      )
+        return state;
+
+      state.accounts[accountId].name = newName;
     },
   },
   selectors: {

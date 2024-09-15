@@ -4,7 +4,6 @@ import { Provider } from "react-redux";
 import { Routes, Route, useParams } from "react-router-dom";
 import * as accounting from "../../core/accounting/store.ts";
 import { bindActionCreators } from "@reduxjs/toolkit";
-const { createAccount, load } = accounting.actions;
 
 const AccountListPage = lazy(() => import("./AccountList.tsx"));
 const AccountEditor = lazy(() => import("./AccountEditPage.tsx"));
@@ -28,8 +27,11 @@ export function Accounting() {
   useEffect(() => {
     const storage = globalThis.localStorage;
 
-    const serializedAccountingStoreState = storage.getItem(sessionId);
+    let serializedAccountingStoreState = storage.getItem(sessionId);
     if (!serializedAccountingStoreState) return;
+
+    serializedAccountingStoreState = serializedAccountingStoreState.trim();
+    if (serializedAccountingStoreState.length === 0) return;
 
     const accountingStoreStateInStorage = JSON.parse(
       serializedAccountingStoreState,

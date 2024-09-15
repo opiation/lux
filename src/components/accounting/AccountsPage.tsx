@@ -15,7 +15,7 @@ export default function AccountsPage() {
       {accountsQuery.isLoading && <CircularProgress isIndeterminate />}
       {accountsQuery.error && <Text>{accountsQuery.error.message}</Text>}
       {accountsQuery.data && accountsQuery.data.length > 0 && (
-        <AccountList accounts={accountsQuery.data}></AccountList>
+        <AccountList></AccountList>
       )}
     </>
   );
