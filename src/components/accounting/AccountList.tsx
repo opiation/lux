@@ -32,7 +32,7 @@ function AccountList(props: AccountListProps) {
             <td>
               <Text>({a.id})</Text>
             </td>
-            <td>
+            <td style={{ display: "flex", justifyContent: "end" }}>
               <AccountInlineActions
                 account={a}
                 onDelete={props.onDeleteInline}
