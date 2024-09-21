@@ -22,19 +22,27 @@ function AccountList(props: AccountListProps) {
   );
 
   return (
-    <Stack direction="column">
-      {accountsToDisplay.map((a) => (
-        <Flex direction="row" gap={2} key={a.id}>
-          <Text flexGrow={1}>{a.name}</Text>
-          <Text flexGrow={1}>({a.id})</Text>
-          <AccountInlineActions
-            account={a}
-            onDelete={props.onDeleteInline}
-            onRename={props.onRenameInline}
-          />
-        </Flex>
-      ))}
-    </Stack>
+    <table>
+      <tbody>
+        {accountsToDisplay.map((a) => (
+          <tr key={a.id}>
+            <td>
+              <Text>{a.name}</Text>
+            </td>
+            <td>
+              <Text>({a.id})</Text>
+            </td>
+            <td>
+              <AccountInlineActions
+                account={a}
+                onDelete={props.onDeleteInline}
+                onRename={props.onRenameInline}
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
